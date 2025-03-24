@@ -57,17 +57,18 @@ if st.button("Estimar parâmetros:"):
     DCp = parse_input(DCp_str)
     DCE = parse_input(DCE_str)
     DCD = parse_input(DCD_str)
-    
-    max_eta = 100*max(max(DCp),max(DCE),max(DCD))
-    
+
     #minimizando V_neg (maximizando V)
-    bounds = [(0,20), (0,max_eta)]
+    vetor_comum = DCp
+    vetor_comum = np.append(vetor_comum, DCE)
+    vetor_comum = np.append(vetor_comum, DCD)
+    eta_max = 100*max(vetor_comum)
+    bounds = [(0,20), (0,eta_max)]
     res = differential_evolution(lambda x: V_neg(x, DCp, DCE, DCD),bounds)
     
-    
+    beta_estimado = res.x[0]
+    eta_estimado = res.x[1]
     
     # Exibir resultados
-    st.write(f"A_soma: {A_soma}")
-    st.write(f"B_soma: {B_soma}")
-    st.write(f"C_soma: {C_soma}")
-    st.write(f"Soma Total: {soma_total}")
+    st.write(f"Parâmetro de forma: {beta_estimado}")
+    st.write(f"Parâmetro de escala: {eta_estimado}")
