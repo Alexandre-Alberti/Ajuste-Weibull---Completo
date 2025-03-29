@@ -62,8 +62,8 @@ if st.button("Estimar parâmetros:"):
     vetor_comum = DCp
     vetor_comum = np.append(vetor_comum, DCE)
     vetor_comum = np.append(vetor_comum, DCD)
-    eta_max = 100*max(vetor_comum)
-    bounds = [(0,20), (0,eta_max)]
+    eta_max = max(vetor_comum)
+    bounds = [(0,10), (0,eta_max)]
     res = differential_evolution(lambda x: V_neg_log(x, DCp, DCE, DCD),bounds)
     
     beta_estimado = res.x[0]
