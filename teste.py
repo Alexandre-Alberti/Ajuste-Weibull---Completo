@@ -28,19 +28,19 @@ def R(t,beta,eta):
     return np.exp(-((t/eta)**beta))
 
 #função de verossimilhança
-def V_neg(parametros, DCp, DCE, DCD):
+def V_neg_log(parametros, DCp, DCE, DCD):
     beta = parametros[0]
     eta = parametros[1]
-    Vs = 1
+    Vs = 0
     if len(DCp)>0:
         for i in range(0,len(DCp)):
-            Vs = Vs*f(DCp[i],beta,eta)
+            Vs = Vs + np.log10(f(DCp[i],beta,eta))
     if len(DCE)>0:
         for j in range(0,len(DCE)):
-            Vs = Vs*F(DCE[j],beta,eta)
+            Vs = Vs + np.log10(F(DCE[j],beta,eta))
     if len(DCD)>0:
         for k in range(0,len(DCD)):
-            Vs = Vs*R(DCD[k],beta,eta)
+            Vs = Vs + np.log10(R(DCD[k],beta,eta))
     return -Vs
 
 # Configuração da interface
@@ -64,7 +64,7 @@ if st.button("Estimar parâmetros:"):
     vetor_comum = np.append(vetor_comum, DCD)
     eta_max = 100*max(vetor_comum)
     bounds = [(0,20), (0,eta_max)]
-    res = differential_evolution(lambda x: V_neg(x, DCp, DCE, DCD),bounds)
+    res = differential_evolution(lambda x: V_neg_log(x, DCp, DCE, DCD),bounds)
     
     beta_estimado = res.x[0]
     eta_estimado = res.x[1]
